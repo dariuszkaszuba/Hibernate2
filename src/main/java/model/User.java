@@ -1,29 +1,52 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.sun.istack.internal.NotNull;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity                                             // adnotacja tworząca tabelkę user w DB
+//@Table(name = "uzytkownicy")
 public class User {
     @Id                                             // adnotacja determinująca PK
     @GeneratedValue(strategy = GenerationType.AUTO) // adnotacja determinująca AI
+//    @Column(name = "identyfikator")
     private int id_u;
+//    @Column(name = "mejl")
+    @Column(unique = true)
+//    @NotNull
     private String email;
+//    @NotNull
     private String password;
-    private String role;
+    @Enumerated
+    private RoleEnum role;                          // umozliwia przypisanie nazw rol zgodnie z roleEnum
     private boolean enable;
-    private LocalDate date_added;
+    private LocalDate date_added = LocalDate.now();
+    @Transient                                       // adnotacja wylaczajaca pole przy mapowaniu
+    private String secret_code;
 
-    public User(String email, String password, String role, boolean enable, LocalDate date_added) {
+    public User(String email, String password, RoleEnum role, boolean enable, LocalDate date_added, String secret_code) {
         this.email = email;
         this.password = password;
         this.role = role;
         this.enable = enable;
         this.date_added = date_added;
+        this.secret_code = secret_code;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id_u=" + id_u +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", enable=" + enable +
+                ", date_added=" + date_added +
+                ", secret_code='" + secret_code + '\'' +
+                '}';
+    }
+
     public User() {
     }
 
@@ -51,11 +74,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 
@@ -73,5 +96,13 @@ public class User {
 
     public void setDate_added(LocalDate date_added) {
         this.date_added = date_added;
+    }
+
+    public String getSecret_code() {
+        return secret_code;
+    }
+
+    public void setSecret_code(String secret_code) {
+        this.secret_code = secret_code;
     }
 }
